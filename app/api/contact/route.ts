@@ -15,15 +15,25 @@ export async function POST(request: Request) {
   });
 
   try {
+    // Send email to you
     await transporter.sendMail({
       from: email,
       to: "muhammedamri2002@gmail.com",
       subject: `[Portfolio] ${subject}`,
       text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
     });
+
+    // Send confirmation to sender
+    await transporter.sendMail({
+      from: "muhammedamri2002@gmail.com",
+      to: email,
+      subject: "We received your message!",
+      text: `Hi ${name},\n\nThank you for reaching out! I have received your message and will get back to you soon.\n\nBest regards,\nMuhammed Amri`,
+    });
+
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error(error); 
+    console.error(error);
     return NextResponse.json({ success: false }, { status: 500 });
   }
 }
