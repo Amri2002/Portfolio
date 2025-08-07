@@ -14,13 +14,30 @@ import { useState } from "react"
 export function ContactSection() {
   const { ref, isIntersecting } = useIntersectionObserver()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [formStatus, setFormStatus] = useState<null | "success" | "error">(null)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    setIsSubmitting(false)
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setFormStatus(null);
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    setIsSubmitting(false);
+
+    if (res.ok) {
+      setFormStatus("success");
+      form.reset();
+    } else {
+      setFormStatus("error");
+    }
   }
 
   return (
@@ -61,7 +78,7 @@ export function ContactSection() {
                   </div>
                   <div>
                     <p className="text-gray-400 text-sm">Email</p>
-                    <p className="text-white font-medium">muhammed.amri@example.com</p>
+                    <p className="text-white font-medium">muhammedamri2002@gmail.com</p>
                   </div>
                 </div>
 
@@ -129,10 +146,21 @@ export function ContactSection() {
                 <CardTitle className="text-white text-xl">Send a Message</CardTitle>
               </CardHeader>
               <CardContent>
+                {formStatus === "success" && (
+                  <div className="mb-4 p-3 rounded bg-green-600/20 text-green-300 border border-green-600/30 text-center">
+                    Your message has been sent successfully!
+                  </div>
+                )}
+                {formStatus === "error" && (
+                  <div className="mb-4 p-3 rounded bg-red-600/20 text-red-300 border border-red-600/30 text-center">
+                    Failed to send message. Please try again later.
+                  </div>
+                )}
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <Input
+                        name="name"
                         placeholder="Your Name"
                         required
                         className="bg-white/5 border-white/10 text-white placeholder-gray-400 focus:border-blue-400 focus:ring-blue-400/20"
@@ -140,6 +168,7 @@ export function ContactSection() {
                     </div>
                     <div>
                       <Input
+                        name="email"
                         type="email"
                         placeholder="Your Email"
                         required
@@ -149,6 +178,7 @@ export function ContactSection() {
                   </div>
                   <div>
                     <Input
+                      name="subject"
                       placeholder="Subject"
                       required
                       className="bg-white/5 border-white/10 text-white placeholder-gray-400 focus:border-blue-400 focus:ring-blue-400/20"
@@ -156,6 +186,7 @@ export function ContactSection() {
                   </div>
                   <div>
                     <Textarea
+                      name="message"
                       placeholder="Your Message"
                       rows={6}
                       required
