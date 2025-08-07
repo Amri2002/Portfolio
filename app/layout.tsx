@@ -46,6 +46,8 @@ export const metadata: Metadata = {
     generator: 'v0.dev'
 }
 
+import { Toaster } from "@/components/ui/toaster"
+
 export default function RootLayout({
   children,
 }: {
@@ -53,7 +55,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`scroll-smooth ${inter.variable}`}>
-      <body className={`${inter.className} antialiased`}>{children}</body>
+      <body className={`${inter.className} antialiased`}>
+        {children}
+        <Toaster />
+      </body>
     </html>
   )
 }

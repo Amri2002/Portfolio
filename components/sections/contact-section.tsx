@@ -9,17 +9,18 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer"
 import { Mail, MapPin, Phone, Send, Github, Linkedin, Twitter } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useToast } from "@/hooks/use-toast"
 
-export function ContactSection() {
+export const ContactSection: React.FC = () => {
   const { ref, isIntersecting } = useIntersectionObserver()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [formStatus, setFormStatus] = useState<null | "success" | "error">(null)
+  const { toast } = useToast()
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setFormStatus(null);
     const form = e.currentTarget;
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
@@ -33,10 +34,18 @@ export function ContactSection() {
     setIsSubmitting(false);
 
     if (res.ok) {
-      setFormStatus("success");
+      toast({
+        title: "✅ Message sent!",
+        description: "Your message has been sent successfully.",
+        variant: "default",
+      });
       form.reset();
     } else {
-      setFormStatus("error");
+      toast({
+        title: "❌ Failed to send message",
+        description: "Please try again later.",
+        variant: "destructive",
+      });
     }
   }
 
@@ -146,16 +155,6 @@ export function ContactSection() {
                 <CardTitle className="text-white text-xl">Send a Message</CardTitle>
               </CardHeader>
               <CardContent>
-                {formStatus === "success" && (
-                  <div className="mb-4 p-3 rounded bg-green-600/20 text-green-300 border border-green-600/30 text-center">
-                    Your message has been sent successfully!
-                  </div>
-                )}
-                {formStatus === "error" && (
-                  <div className="mb-4 p-3 rounded bg-red-600/20 text-red-300 border border-red-600/30 text-center">
-                    Failed to send message. Please try again later.
-                  </div>
-                )}
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
