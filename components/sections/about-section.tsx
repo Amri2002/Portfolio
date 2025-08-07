@@ -90,9 +90,9 @@ export function AboutSection() {
             <div className="order-1 lg:order-2 flex justify-center">
               <div className="relative group">
                 <div className="absolute -inset-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl opacity-20 group-hover:opacity-30 transition-opacity blur-xl" />
-                <div className="relative w-80 h-80 rounded-2xl overflow-hidden border border-white/10 bg-gradient-to-br from-gray-800 to-gray-900">
+                <div className="relative w-80 h-100 rounded-2xl overflow-hidden border border-white/10 bg-gradient-to-br from-gray-800 to-gray-900">
                   <Image
-                    src="/placeholder.svg?height=320&width=320"
+                    src="/PortfolioImage.jpeg"
                     alt="Muhammed Amri"
                     width={320}
                     height={320}
